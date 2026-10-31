@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="TrueDotBin.CosmosUtils.TestKernel/TrueDotBin.CosmosUtils.TestKernel.csproj" Id="68a0b6f1-8eb4-440b-a14d-4ff7438e08a4" />
   <Project Path="TrueDotBin.CosmosUtils/TrueDotBin.CosmosUtils.csproj" />
 </Solution>
