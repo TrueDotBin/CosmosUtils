@@ -13,7 +13,7 @@ namespace TrueDotBin.CosmosUtils.Logging
     /// By default, the log format is "[{LEVEL}] {MESSAGE}"; this can be changed with <see cref="LogFormat"/>
     /// </para>
     /// </remarks>
-    public class Logger(string source = "Logger")
+    public class Logger(string? source = null)
     {
         /// <summary>
         /// The process-wide logger instance. Use this instead of creating a
@@ -24,7 +24,7 @@ namespace TrueDotBin.CosmosUtils.Logging
         /// <summary>
         /// Where each log comes from.
         /// </summary>
-        public string Source { get; } = source;
+        public string Source { get; } = source ?? Defaults.DefaultLoggerSource;
 
         /// <summary>
         /// The format string to format the time portion of a log entry.
