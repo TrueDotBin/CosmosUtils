@@ -15,6 +15,10 @@ namespace TrueDotBin.CosmosUtils.Logging
     /// </remarks>
     public class Logger(string source = "Logger")
     {
+        /// <summary>
+        /// The process-wide logger instance. Use this instead of creating a
+        /// <see cref="Logger"/> unless you need independent configuration.
+        /// </summary>
         public static readonly Logger Global = new();
 
         /// <summary>
