@@ -11,26 +11,11 @@ namespace TrueDotBin.CosmosUtils.TestKernel
     {
         private const string NineSliceTestPath = "TrueDotBin.CosmosUtils.TestKernel.Resources.NineSlice.png";
 
-        protected override void BeforeRun()
-        { 
-            Console.WriteLine("CosmosUtils test kernel booted successfully!");
-
-            Logger.Global.Info("Global logger");
-
-            var testLogger = new Logger("LoggerInstance")
-            {
-                LogFormat = "{SOURCE} | {LEVEL} {MESSAGE}"
-            };
-
-            testLogger.Info("Instanced logger with custom log format");
-
-            Logger.Global.Info("Preparing for nine-slice test");
-            TimerManager.Wait(2000);
-
+        private static void NineSliceTest()
+        {
             if (!EmbeddedResourceLoader.TryLoadResource(NineSliceTestPath, typeof(Kernel).Assembly, out var nineSliceTestImageBytes))
             {
                 Logger.Global.Error($"Could not load \"{NineSliceTestPath}\"");
-                Stop();
                 return;
             }
 
@@ -47,6 +32,30 @@ namespace TrueDotBin.CosmosUtils.TestKernel
             }
 
             canvas.Display();
+        }
+
+        private static void LoggerTest()
+        {
+            Logger.Global.Info("Global logger");
+
+            var testLogger = new Logger("LoggerInstance")
+            {
+                LogFormat = "{SOURCE} | {LEVEL} {MESSAGE}"
+            };
+
+            testLogger.Info("Instanced logger with custom log format");
+        }
+
+        protected override void BeforeRun()
+        { 
+            Console.WriteLine("CosmosUtils test kernel booted successfully!");
+
+            LoggerTest();
+
+            Logger.Global.Info("Preparing for nine-slice test");
+            TimerManager.Wait(2000);
+
+            NineSliceTest();
         }
 
         protected override void Run()
