@@ -15,6 +15,7 @@
 | Feature | Description | Usage |
 |---------|-------------|-------|
 | Nine-sliced image scaling | Scales an image without distorting its corners and edges | `canvas.DrawNineSliced(...)` in `TrueDotBin.CosmosUtils.Graphics` |
+| Text alignment | Places a string or image at any of nine positions inside a rectangle | `canvas.DrawStringAligned(...)` in `TrueDotBin.CosmosUtils.Graphics` |
 
 ### Resources
 
