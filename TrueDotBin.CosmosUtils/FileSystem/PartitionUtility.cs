@@ -8,7 +8,7 @@ using System.Text;
 namespace TrueDotBin.CosmosUtils.FileSystem
 {
     /// <summary>
-    /// Utility for managing partitions.
+    /// A utility for managing partitions.
     /// </summary>
     public static class PartitionUtility
     {

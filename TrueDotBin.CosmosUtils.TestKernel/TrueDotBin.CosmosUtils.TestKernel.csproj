@@ -5,6 +5,10 @@
     <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\NineSlice.png" />
+  </ItemGroup>
+
   <!-- Core kernel packages -->
   <ItemGroup>
     <PackageReference Include="Cosmos.Kernel" Version="3.0.96" />
