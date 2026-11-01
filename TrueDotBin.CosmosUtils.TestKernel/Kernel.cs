@@ -27,12 +27,11 @@ namespace TrueDotBin.CosmosUtils.TestKernel
             var rectWidth = 70;
             var rectHeight = 40;
             var currentY = 20;
-            var currentX = 20;
             var spacing = 10;
 
             foreach (var horizontal in Enum.GetValues<HorizontalAlignment>())
             {
-                currentX = 20;
+                var currentX = 20;
 
                 foreach (var vertical in Enum.GetValues<VerticalAlignment>())
                 {
