@@ -6,11 +6,15 @@ using System.Text;
 namespace TrueDotBin.CosmosUtils.Logging
 {
     /// <summary>
-    /// Writes leveled log levels to the console.
+    /// Writes leveled log messages to the console.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// By default, the log format is "[{LEVEL}] {MESSAGE}"; this can be changed with <see cref="LogFormat"/>
+    /// The default log format is "[{LEVEL}] {MESSAGE}"; this can be changed with <see cref="LogFormat"/>
+    /// </para>
+    /// 
+    /// <para>
+    /// Output is colored by default, set <see cref="ColoredOutput"/> to false to disable output coloring.
     /// </para>
     /// </remarks>
     public class Logger(string? source = null)
@@ -25,6 +29,20 @@ namespace TrueDotBin.CosmosUtils.Logging
         /// Where each log comes from.
         /// </summary>
         public string Source { get; } = source ?? Defaults.DefaultLoggerSource;
+
+        /// <summary>
+        /// Whether to color the output based on the log level.
+        /// </summary>
+        /// <remarks>
+        /// Each log level has its own color:
+        /// <list type="bullet">
+        ///     <item>Information - cyan</item>
+        ///     <item>Error - red</item>
+        ///     <item>Warning - yellow</item>
+        ///     <item>Fatal - dark red</item>
+        /// </list>
+        /// </remarks>
+        public bool ColoredOutput { get; set; } = true;
 
         /// <summary>
         /// The format string to format the time portion of a log entry.
@@ -82,8 +100,14 @@ namespace TrueDotBin.CosmosUtils.Logging
         /// <param name="message">The message to log.</param>
         public void Info(string message)
         {
+            if (ColoredOutput)
+                Console.ForegroundColor = ConsoleColor.Cyan;
+
             var msg = CreateLogMessage("INF", message);
             Console.WriteLine(msg);
+
+            if (ColoredOutput)
+                Console.ResetColor();
         }
 
         /// <summary>
@@ -92,8 +116,14 @@ namespace TrueDotBin.CosmosUtils.Logging
         /// <param name="message">The message to log.</param>
         public void Error(string message)
         {
+            if (ColoredOutput)
+                Console.ForegroundColor = ConsoleColor.Red;
+
             var msg = CreateLogMessage("ERR", message);
             Console.WriteLine(msg);
+
+            if (ColoredOutput)
+                Console.ResetColor();
         }
 
         /// <summary>
@@ -102,8 +132,14 @@ namespace TrueDotBin.CosmosUtils.Logging
         /// <param name="message">The message to log.</param>
         public void Fatal(string message)
         {
+            if (ColoredOutput)
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+
             var msg = CreateLogMessage("FTL", message);
             Console.WriteLine(msg);
+
+            if (ColoredOutput)
+                Console.ResetColor();
         }
 
         /// <summary>
@@ -112,8 +148,14 @@ namespace TrueDotBin.CosmosUtils.Logging
         /// <param name="message">The message to log.</param>
         public void Warn(string message)
         {
+            if (ColoredOutput)
+                Console.ForegroundColor = ConsoleColor.Yellow;
+
             var msg = CreateLogMessage("WRN", message);
             Console.WriteLine(msg);
+
+            if (ColoredOutput)
+                Console.ResetColor();
         }
     }
 }
