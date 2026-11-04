@@ -17,7 +17,7 @@ namespace TrueDotBin.CosmosUtils.Logging
     /// Output is colored by default, set <see cref="ColoredOutput"/> to false to disable output coloring.
     /// </para>
     /// </remarks>
-    public class Logger(string? source = null)
+    public sealed class Logger(string? source = null)
     {
         /// <summary>
         /// The process-wide logger instance. Use this instead of creating a
