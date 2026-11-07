@@ -95,6 +95,22 @@ namespace TrueDotBin.CosmosUtils.Logging
         }
 
         /// <summary>
+        /// Logs a message that indicates a sucess.
+        /// </summary>
+        /// <param name="message">The message to log.</param>
+        public void Success(string message)
+        {
+            if (ColoredOutput)
+                Console.ForegroundColor = ConsoleColor.Green;
+
+            var msg = CreateLogMessage("SUC", message);
+            Console.WriteLine(msg);
+
+            if (ColoredOutput)
+                Console.ResetColor();
+        }
+
+        /// <summary>
         /// Logs an informational message.
         /// </summary>
         /// <param name="message">The message to log.</param>
