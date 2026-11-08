@@ -1,4 +1,4 @@
-name: Build documentation and release CosmosUtils
+name: Release CosmosUtils
 
 on:
     workflow_dispatch:
@@ -84,43 +84,3 @@ jobs:
                         ```
                 files: ${{ env.MAIN_PROJECT_NAME }}/bin/${{ env.CONFIGURATION }}/*.nupkg
                 fail_on_unmatched_files: true
-
-    docs:
-        needs: build
-        runs-on: ubuntu-latest
-
-        environment:
-            name: github-pages
-            url: ${{ steps.deployment.outputs.page_url }}
-
-        permissions:
-            contents: read
-            pages: write
-            id-token: write
-
-        steps:
-            - name: Checkout repo
-              uses: actions/checkout@v4
-            
-            - name: Setup .NET
-              uses: actions/setup-dotnet@v4
-              with:
-                dotnet-version: ${{ env.DOTNET_VERSION }}
-
-            - name: Install DocFX
-              run: dotnet tool install -g docfx
-
-            - name: Build docs
-              run: docfx docfx.json
-
-            - name: Setup Pages
-              uses: actions/configure-pages@v5
-
-            - name: Upload Pages artifact
-              uses: actions/upload-pages-artifact@v3
-              with:
-                path: _site
-                
-            - name: Deploy to GitHub Pages
-              id: deployment
-              uses: actions/deploy-pages@v4
