@@ -27,7 +27,8 @@
     "resource": [
       {
         "files": [
-          "images/**"
+          "images/**",
+          "icon.png"
         ]
       }
     ],
@@ -39,6 +40,8 @@
     "globalMetadata": {
       "_appName": "Cosmos Utilities",
       "_appTitle": "Cosmos Utilities",
+      "_appFaviconPath": "icon.png",
+      "_appLogoPath": "icon.png",
       "_enableSearch": true,
       "pdf": false
     }
