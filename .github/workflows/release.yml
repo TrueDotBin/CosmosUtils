@@ -1,4 +1,4 @@
-name: Release CosmosUtils
+name: Build documentation and release CosmosUtils
 
 on:
     workflow_dispatch:
@@ -12,12 +12,14 @@ env:
     DOTNET_VERSION: '10.0.x'
     CONFIGURATION: 'Release'
     MAIN_PROJECT_NAME: 'TrueDotBin.CosmosUtils'
+    NUGET_PROFILE: 'Demiomad'
                 
 jobs:
     build:
         runs-on: ubuntu-latest
                     
         permissions:
+            id-token: write
             contents: write
                     
         steps:
@@ -38,33 +40,49 @@ jobs:
                 ./${{ env.MAIN_PROJECT_NAME }}/${{ env.MAIN_PROJECT_NAME }}.csproj
                 -c ${{ env.CONFIGURATION }}
                 -p:Version=${{ inputs.version }}
-                --no-restore
 
-            - name: Publish
+            - name: NuGet login
+              uses: NuGet/login@v1
+              id: login
+              with:
+                user: ${{ env.NUGET_PROFILE }}
+
+            - name: Push to NuGet
               run: >
-                dotnet publish
-                ./${{ env.MAIN_PROJECT_NAME }}/${{ env.MAIN_PROJECT_NAME }}.csproj
-                -c ${{ env.CONFIGURATION }}
-                -p:Version=${{ inputs.version }}
-                -o ./publish
-                        
-            - name: Upload CosmosUtils as an artifact
-              uses: actions/upload-artifact@v4
-              with:
-                name: CosmosUtils-${{ inputs.version }}
-                path: ./publish/
+                dotnet nuget push
+                ./${{ env.MAIN_PROJECT_NAME }}/bin/${{ env.CONFIGURATION }}/*.nupkg
+                --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
+                --source https://api.nuget.org/v3/index.json
+                --skip-duplicate
 
-            - name: Zip publish output
-              run: |
-                cd publish
-                zip -r ../CosmosUtils-${{ inputs.version }}.zip .
+    docs:
+        needs: build
+        runs-on: ubuntu-latest
 
-            - name: Create GitHub Release
-              uses: softprops/action-gh-release@v2
+        permissions:
+            contents: read
+            pages: write
+            id-token: write
+
+        steps:
+            - name: Checout repo
+              uses: actions/checkout@v4
+            
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v4
               with:
-                draft: true
-                tag_name: v${{ inputs.version }}
-                name: CosmosUtils v${{ inputs.version }}
-                files: CosmosUtils-${{ inputs.version }}.zip
-                fail_on_unmatched_files: true
-                prerelease: ${{ contains(inputs.version, 'alpha') || contains(inputs.version, 'beta') }}
+                dotnet-version: ${{ env.DOTNET_VERSION }}
+
+            - name: Install DocFX
+              run: dotnet tool install -g docfx
+
+            - name: Build docs
+              run: docfx docfx.json
+
+            - name: Upload Pages artifact
+              uses: actions/upload-pages-artifact@v3
+              with:
+                path: _site
+                
+            - name: Deploy to GitHub Pages
+              uses: actions/deploy-pages@v4
