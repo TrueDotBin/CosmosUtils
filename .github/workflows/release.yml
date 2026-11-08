@@ -60,11 +60,17 @@ jobs:
               with:
                 draft: true
                 tag_name: v${{ inputs.version }}
-                name: CosmosUtils v${{ inputs.version }}
+                name: Cosmos Utilities v${{ inputs.version }}
                 body: |
                     ## Installation
                     - **NuGet (recommended):** `dotnet add package TrueDotBin.CosmosUtils --version ${{ inputs.version }}`
-                    - **Manual:** download `CosmosUtils-${{ inputs.version }}.zip` and reference the DLLs directly.
+                    - **Manual:** download the nupkg file and install it:
+                        ```bash
+                        # Put the .nupkg file inside a folder
+                        # Replace "/path/to/your/folder" with the path of **your folder with the .nupkg file**
+                        dotnet nuget add source "/path/to/your/folder" --name LocalPackages
+                        dotnet add package TrueDotBin.CosmosUtils --version ${{ inputs.version }} --source LocalPackages
+                        ```
                 files: ${{ env.MAIN_PROJECT_NAME }}/bin/${{ env.CONFIGURATION }}/*.nupkg
                 fail_on_unmatched_files: true
                 prerelease: ${{ contains(inputs.version, 'alpha') || contains(inputs.version, 'beta') }}
