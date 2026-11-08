@@ -9,9 +9,9 @@ on:
                 type: string
                 
 env:
-                DOTNET_VERSION: '10.0.x'
-                CONFIGURATION: 'Release'
-                MAIN_PROJECT_NAME: 'TrueDotBin.CosmosUtils'
+    DOTNET_VERSION: '10.0.x'
+    CONFIGURATION: 'Release'
+    MAIN_PROJECT_NAME: 'TrueDotBin.CosmosUtils'
                 
 jobs:
     build:
@@ -45,7 +45,7 @@ jobs:
               with:
                 name: CosmosUtils-${{ inputs.version }}
                 path: ./publish/
-                
+
             - name: Zip publish output
               run: |
                 cd publish
