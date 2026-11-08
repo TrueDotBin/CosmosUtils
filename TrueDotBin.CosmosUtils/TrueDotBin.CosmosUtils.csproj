@@ -4,7 +4,21 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Title>Cosmos Utilities</Title>
+    <Authors>Demiomad</Authors>
+    <Company>Demiomad</Company>
+    <Description>A collection of utilities for Cosmos kernels.</Description>
+    <RepositoryUrl>https://github.com/TrueDotBin/CosmosUtils</RepositoryUrl>
+    <PackageTags>cosmos; utils; cosmosos</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Cosmos.Kernel" Version="3.0.97" />
