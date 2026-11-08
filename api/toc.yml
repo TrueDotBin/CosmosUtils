@@ -1,0 +1,56 @@
+### YamlMime:TableOfContent
+items:
+- uid: TrueDotBin.CosmosUtils
+  name: TrueDotBin.CosmosUtils
+  type: Namespace
+  items:
+  - uid: TrueDotBin.CosmosUtils.Defaults
+    name: Defaults
+    type: Class
+- uid: TrueDotBin.CosmosUtils.FileSystem
+  name: TrueDotBin.CosmosUtils.FileSystem
+  type: Namespace
+  items:
+  - uid: TrueDotBin.CosmosUtils.FileSystem.FileSystemMath
+    name: FileSystemMath
+    type: Class
+  - uid: TrueDotBin.CosmosUtils.FileSystem.MbrSystemId
+    name: MbrSystemId
+    type: Enum
+  - uid: TrueDotBin.CosmosUtils.FileSystem.PartitionUtility
+    name: PartitionUtility
+    type: Class
+  - uid: TrueDotBin.CosmosUtils.FileSystem.SectorCalculator
+    name: SectorCalculator
+    type: Class
+- uid: TrueDotBin.CosmosUtils.Graphics
+  name: TrueDotBin.CosmosUtils.Graphics
+  type: Namespace
+  items:
+  - uid: TrueDotBin.CosmosUtils.Graphics.AlignedDrawing
+    name: AlignedDrawing
+    type: Class
+  - uid: TrueDotBin.CosmosUtils.Graphics.HorizontalAlignment
+    name: HorizontalAlignment
+    type: Enum
+  - uid: TrueDotBin.CosmosUtils.Graphics.NineSlicer
+    name: NineSlicer
+    type: Class
+  - uid: TrueDotBin.CosmosUtils.Graphics.VerticalAlignment
+    name: VerticalAlignment
+    type: Enum
+- uid: TrueDotBin.CosmosUtils.Logging
+  name: TrueDotBin.CosmosUtils.Logging
+  type: Namespace
+  items:
+  - uid: TrueDotBin.CosmosUtils.Logging.Logger
+    name: Logger
+    type: Class
+- uid: TrueDotBin.CosmosUtils.Resources
+  name: TrueDotBin.CosmosUtils.Resources
+  type: Namespace
+  items:
+  - uid: TrueDotBin.CosmosUtils.Resources.EmbeddedResourceLoader
+    name: EmbeddedResourceLoader
+    type: Class
+memberLayout: SamePage

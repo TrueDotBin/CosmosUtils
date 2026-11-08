@@ -489,5 +489,9 @@ output-*/
 
 # Cosmos folder
 .cosmos/
-/_site
-/api
+
+# DocFX
+api/*.yml
+!api/toc.yml
+!api/index.md
+_site/
