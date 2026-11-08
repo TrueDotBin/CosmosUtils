@@ -8,6 +8,7 @@ on:
             - 'docs/**'
             - 'docfx.json'
             - '.github/workflows/docs.yml'
+            - 'truedotbin/**'
             
     workflow_dispatch:
 
