@@ -5,7 +5,7 @@ using System.Text;
 namespace TrueDotBin.CosmosUtils.FileSystem
 {
     /// <summary>
-    /// Helper math operations for file system stuff.
+    /// Helper math operations for the file system.
     /// </summary>
     public static class FileSystemMath
     {
@@ -30,10 +30,11 @@ namespace TrueDotBin.CosmosUtils.FileSystem
 
         /// <summary>
         /// Calculates the number of blocks required to hold <paramref name="bytes"/>.
-        /// </summary>
-        /// <remarks>
+        /// 
+        /// <para>
         /// Prefer this over <see cref="Math.Ceiling(double)"/> for sector math.
-        /// </remarks>
+        /// </para>
+        /// </summary>
         /// <param name="bytes">The total size in bytes.</param>
         /// <param name="blockSize">The size of a single block in bytes.</param>
         /// <returns>The number of blocks, rounded up.</returns>

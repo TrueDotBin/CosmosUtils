@@ -11,6 +11,7 @@
     <RepositoryUrl>https://github.com/TrueDotBin/CosmosUtils</RepositoryUrl>
     <PackageTags>cosmos; utils; cosmosos</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

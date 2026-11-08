@@ -489,3 +489,5 @@ output-*/
 
 # Cosmos folder
 .cosmos/
+/_site
+/api
