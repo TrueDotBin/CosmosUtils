@@ -95,7 +95,7 @@ namespace TrueDotBin.CosmosUtils.Logging
         }
 
         /// <summary>
-        /// Logs a message that indicates a sucess.
+        /// Logs a message that indicates a success.
         /// </summary>
         /// <param name="message">The message to log.</param>
         public void Success(string message)
