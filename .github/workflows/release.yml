@@ -1,0 +1,61 @@
+name: Release CosmosUtils
+
+on:
+    workflow_dispatch:
+        inputs:
+            version:
+                description: 'The version of this build'
+                required: true
+                type: string
+                
+env:
+                DOTNET_VERSION: '10.0.x'
+                CONFIGURATION: 'Release'
+                MAIN_PROJECT_NAME: 'TrueDotBin.CosmosUtils'
+                
+jobs:
+    build:
+        runs-on: ubuntu-latest
+                    
+        permissions:
+            contents: write
+                    
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+                    
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v4
+              with:
+                dotnet-version: ${{ env.DOTNET_VERSION }}
+                        
+            - name: Restore
+              run: dotnet restore ./${{ env.MAIN_PROJECT_NAME }}/${{ env.MAIN_PROJECT_NAME }}.csproj
+                        
+            - name: Build
+              run: >
+                dotnet build
+                ./${{ env.MAIN_PROJECT_NAME }}/${{ env.MAIN_PROJECT_NAME }}.csproj
+                -c ${{ env.CONFIGURATION }}
+                -p:Version=${{ inputs.version }}
+                --no-restore
+                        
+            - name: Upload CosmosUtils as an artifact
+              uses: actions/upload-artifact@v4
+              with:
+                name: CosmosUtils-${{ inputs.version }}
+                path: ./publish/
+                
+            - name: Zip publish output
+              run: |
+                cd publish
+                zip -r ../CosmosUtils-${{ inputs.version }}.zip .
+
+            - name: Create GitHub Release
+              uses: softprops/action-gh-release@v2
+              with:
+                tag_name: v${{ inputs.version }}
+                name: CosmosUtils v${{ inputs.version }}
+                files: CosmosUtils-${{ inputs.version }}.zip
+                fail_on_unmatched_files: true
+                prerelease: ${{ contains(inputs.version, 'alpha') || contains(inputs.version, 'beta') }}
