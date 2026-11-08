@@ -15,12 +15,6 @@ cd MyKernel
 ```
 3. Once the project has been created, add the package to your project:
 
-<!-- NOTE TO SELF: This is currently misleading, as there is no NuGet package yet. -->
-<!-- Once the NuGet package has been created, this comment will be removed. -->
-
-> [!NOTE]
-> If the package doesn't exist or fails to install, either add a project reference or download [the latest release][latest-release]
-
 ```bash
 dotnet package add TrueDotBin.CosmosUtils
 ```
