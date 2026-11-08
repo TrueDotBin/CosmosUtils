@@ -84,11 +84,14 @@ jobs:
                         ```
                 files: ${{ env.MAIN_PROJECT_NAME }}/bin/${{ env.CONFIGURATION }}/*.nupkg
                 fail_on_unmatched_files: true
-                prerelease: ${{ contains(inputs.version, 'alpha') || contains(inputs.version, 'beta') }}
 
     docs:
         needs: build
         runs-on: ubuntu-latest
+
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
 
         permissions:
             contents: read
@@ -96,7 +99,7 @@ jobs:
             id-token: write
 
         steps:
-            - name: Checout repo
+            - name: Checkout repo
               uses: actions/checkout@v4
             
             - name: Setup .NET
@@ -110,10 +113,14 @@ jobs:
             - name: Build docs
               run: docfx docfx.json
 
+            - name: Setup Pages
+              uses: actions/configure-pages@v5
+
             - name: Upload Pages artifact
               uses: actions/upload-pages-artifact@v3
               with:
                 path: _site
                 
             - name: Deploy to GitHub Pages
+              id: deployment
               uses: actions/deploy-pages@v4
