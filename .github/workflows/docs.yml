@@ -13,6 +13,7 @@ on:
 
 env:
     DOTNET_VERSION: '10.0.x'
+    DOCFX_VERSION: '2.81.0'
 
 jobs:
     docs:
@@ -37,7 +38,7 @@ jobs:
                 dotnet-version: ${{ env.DOTNET_VERSION }}
 
             - name: Install DocFX
-              run: dotnet tool install -g docfx
+              run: dotnet tool install -g docfx --version ${{ env.DOCFX_VERSION }}
 
             - name: Build docs
               run: docfx docfx.json
