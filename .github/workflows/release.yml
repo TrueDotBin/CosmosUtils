@@ -54,6 +54,7 @@ jobs:
             - name: Create GitHub Release
               uses: softprops/action-gh-release@v2
               with:
+                draft: true
                 tag_name: v${{ inputs.version }}
                 name: CosmosUtils v${{ inputs.version }}
                 files: CosmosUtils-${{ inputs.version }}.zip
