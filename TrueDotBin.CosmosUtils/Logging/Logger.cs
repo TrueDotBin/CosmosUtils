@@ -10,10 +10,6 @@ namespace TrueDotBin.CosmosUtils.Logging
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The default log format is "[{LEVEL}] {MESSAGE}"; this can be changed with <see cref="LogFormat"/>
-    /// </para>
-    /// 
-    /// <para>
     /// Output is colored by default, set <see cref="ColoredOutput"/> to false to disable output coloring.
     /// </para>
     /// </remarks>
