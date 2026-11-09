@@ -36,11 +36,14 @@ namespace TrueDotBin.CosmosUtils.Logging
         /// <remarks>
         /// Each log level has its own color:
         /// <list type="bullet">
-        ///     <item>Information - cyan</item>
-        ///     <item>Error - red</item>
-        ///     <item>Warning - yellow</item>
-        ///     <item>Fatal - dark red</item>
+        ///     <item><see cref="LogLevel.Fatal"/> - red</item>
+        ///     <item><see cref="LogLevel.Error"/> - red</item>
+        ///     <item><see cref="LogLevel.Warning"/> - yellow</item>
+        ///     <item><see cref="LogLevel.Info"/> - cyan</item>
+        ///     <item><see cref="LogLevel.Debug"/> - white</item>
         /// </list>
+        /// 
+        /// These can be changed using <see cref="LogLevelColors"/>
         /// </remarks>
         public bool ColoredOutput { get; set; } = true;
 
@@ -61,117 +64,15 @@ namespace TrueDotBin.CosmosUtils.Logging
         public string DateFormat { get; set; } = "dd/MM/yyyy";
 
         /// <summary>
-        /// The format of each log entry.
+        /// The color of each log level.
         /// </summary>
-        /// <remarks>
-        /// <para>
-        /// The following tokens are replaced in each entry:
-        /// <list type="bullet">
-        ///     <item><c>{SOURCE}</c> - where this log entry came from, e.g., "Shell"</item>
-        ///     <item><c>{LEVEL}</c> - the log level</item>
-        ///     <item><c>{MESSAGE}</c> - the message you want to log</item>
-        ///     <item><c>{DATE}</c> - the current date, formatted with <see cref="DateFormat"/></item>
-        ///     <item><c>{TIME}</c> - the current time, formatted with <see cref="TimeFormat"/></item>
-        /// </list></para>
-        /// 
-        /// <para>
-        /// The log level is three characters; there is no way to change that.
-        /// </para>
-        /// </remarks>
-        public string LogFormat { get; set; } = "[{LEVEL}] {MESSAGE}";
-
-        private string CreateLogMessage(string level, string message)
+        public Dictionary<LogLevel, ConsoleColor> LogLevelColors { get; set; } = new()
         {
-            var now = DateTime.Now;
-            var time = now.ToString(TimeFormat);
-            var date = now.ToString(DateFormat);
-
-            return LogFormat
-                .Replace("{SOURCE}", Source)
-                .Replace("{LEVEL}", level)
-                .Replace("{MESSAGE}", message)
-                .Replace("{DATE}", date)
-                .Replace("{TIME}", time);
-        }
-
-        /// <summary>
-        /// Logs a message that indicates a success.
-        /// </summary>
-        /// <param name="message">The message to log.</param>
-        public void Success(string message)
-        {
-            if (ColoredOutput)
-                Console.ForegroundColor = ConsoleColor.Green;
-
-            var msg = CreateLogMessage("SUC", message);
-            Console.WriteLine(msg);
-
-            if (ColoredOutput)
-                Console.ResetColor();
-        }
-
-        /// <summary>
-        /// Logs an informational message.
-        /// </summary>
-        /// <param name="message">The message to log.</param>
-        public void Info(string message)
-        {
-            if (ColoredOutput)
-                Console.ForegroundColor = ConsoleColor.Cyan;
-
-            var msg = CreateLogMessage("INF", message);
-            Console.WriteLine(msg);
-
-            if (ColoredOutput)
-                Console.ResetColor();
-        }
-
-        /// <summary>
-        /// Logs a message that indicates an error with an operation.
-        /// </summary>
-        /// <param name="message">The message to log.</param>
-        public void Error(string message)
-        {
-            if (ColoredOutput)
-                Console.ForegroundColor = ConsoleColor.Red;
-
-            var msg = CreateLogMessage("ERR", message);
-            Console.WriteLine(msg);
-
-            if (ColoredOutput)
-                Console.ResetColor();
-        }
-
-        /// <summary>
-        /// Logs a message that indicates a fatal failure.
-        /// </summary>
-        /// <param name="message">The message to log.</param>
-        public void Fatal(string message)
-        {
-            if (ColoredOutput)
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-
-            var msg = CreateLogMessage("FTL", message);
-            Console.WriteLine(msg);
-
-            if (ColoredOutput)
-                Console.ResetColor();
-        }
-
-        /// <summary>
-        /// Logs a message that indicates a warning.
-        /// </summary>
-        /// <param name="message">The message to log.</param>
-        public void Warn(string message)
-        {
-            if (ColoredOutput)
-                Console.ForegroundColor = ConsoleColor.Yellow;
-
-            var msg = CreateLogMessage("WRN", message);
-            Console.WriteLine(msg);
-
-            if (ColoredOutput)
-                Console.ResetColor();
-        }
+            { LogLevel.Fatal, ConsoleColor.Red },
+            { LogLevel.Error, ConsoleColor.Red },
+            { LogLevel.Warning, ConsoleColor.Yellow },
+            { LogLevel.Info, ConsoleColor.Cyan },
+            { LogLevel.Debug, ConsoleColor.White },
+        };
     }
 }
