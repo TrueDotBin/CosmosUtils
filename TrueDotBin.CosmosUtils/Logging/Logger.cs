@@ -70,5 +70,25 @@ namespace TrueDotBin.CosmosUtils.Logging
             { LogLevel.Info, ConsoleColor.Cyan },
             { LogLevel.Debug, ConsoleColor.White },
         };
+
+        /// <summary>
+        /// The minimum log level that will be shown on the console.
+        /// </summary>
+        public LogLevel MinimumLevel { get; set; } = LogLevel.Info;
+
+        /// <summary>
+        /// The minimum log level that will be written to <see cref="LogFilePath"/> if <see cref="WriteToFile"/> is true.
+        /// </summary>
+        public LogLevel MinimumFileLevel { get; set; } = LogLevel.Info;
+
+        /// <summary>
+        /// Whether to also write logs to a file.
+        /// </summary>
+        public bool WriteToFile { get; set; }
+
+        /// <summary>
+        /// The path of the log file.
+        /// </summary>
+        public string? LogFilePath { get; set; }
     }
 }
