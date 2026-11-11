@@ -81,6 +81,18 @@ namespace TrueDotBin.CosmosUtils.Logging
         };
 
         /// <summary>
+        /// The string representation of each log level.
+        /// </summary>
+        public Dictionary<LogLevel, string> LogLevelStrings { get; set; } = new()
+        {
+            { LogLevel.Fatal, "FTL" },
+            { LogLevel.Error, "ERR" },
+            { LogLevel.Warning, "WRN" },
+            { LogLevel.Info, "INF" },
+            { LogLevel.Debug, "DEB" },
+        };
+
+        /// <summary>
         /// The minimum log level that will be shown on the console.
         /// </summary>
         public LogLevel MinimumLevel { get; set; } = LogLevel.Info;
@@ -99,5 +111,15 @@ namespace TrueDotBin.CosmosUtils.Logging
         /// The path of the log file.
         /// </summary>
         public string? LogFilePath { get; set; }
+
+        /// <summary>
+        /// The format options for logging to standard output.
+        /// </summary>
+        public LoggerFormatOptions OutputFormatOptions { get; set; } = new();
+
+        /// <summary>
+        /// The format options for logging to a file.
+        /// </summary>
+        public LoggerFormatOptions FileFormatOptions { get; set; } = new();
     }
 }
