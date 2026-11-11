@@ -12,6 +12,15 @@ namespace TrueDotBin.CosmosUtils.Logging
     /// <para>
     /// Output is colored by default, set <see cref="ColoredOutput"/> to false to disable output coloring.
     /// </para>
+    /// 
+    /// <para>
+    /// Logs are not written to a file, set <see cref="WriteToFile"/> to true and set a <see cref="LogFilePath"/> to enable file logging.
+    /// </para>
+    /// 
+    /// <para>
+    /// The minimum log level is <see cref="LogLevel.Info"/>, this can be changed by
+    /// setting <see cref="MinimumLevel"/> (output) or <see cref="MinimumFileLevel"/> (file logging)
+    /// </para>
     /// </remarks>
     public sealed class Logger(string? source = null)
     {
