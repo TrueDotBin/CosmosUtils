@@ -177,7 +177,15 @@ namespace TrueDotBin.CosmosUtils.Logging
             var logFileLine = string.Concat(rawFileFragments);
 
             if (WriteToFile && File.Exists(LogFilePath))
+            {
+                if (level < MinimumFileLevel)
+                    return;
+
                 File.AppendAllText(LogFilePath, logFileLine + "\n");
+            }
+
+            if (level < MinimumLevel)
+                return;
 
             if (!ColoredOutput || Console.IsOutputRedirected)
             {
