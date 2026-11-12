@@ -125,5 +125,91 @@ namespace TrueDotBin.CosmosUtils.Logging
             ShowDate = true,
             ShowTime = true
         };
+
+        private List<LogFragment> BuildFragments(LoggerFormatOptions options, LogLevel level, string message)
+        {
+            var fragments = new List<LogFragment>();
+            var dt = DateTime.Now;
+            var formattedDate = dt.ToString(DateFormat);
+            var formattedTime = dt.ToString(TimeFormat);
+
+            if (options.ShowDate)
+            {
+                var frag = new LogFragment($"{formattedDate} ", null);
+                fragments.Add(frag);
+            }
+
+            if (options.ShowTime)
+            {
+                var frag = new LogFragment($"{formattedTime} ", null);
+                fragments.Add(frag);
+            }
+
+            if (options.ShowLevel)
+            {
+                var color = LogLevelColors[level];
+                var logLevelString = LogLevelStrings[level];
+
+                var frag = new LogFragment($"[ {logLevelString} ] ", color);
+                fragments.Add(frag);
+            }
+
+            if (options.ShowSource && !string.IsNullOrEmpty(source))
+            {
+                var frag = new LogFragment($"({source}) ", null);
+                fragments.Add(frag);
+            }
+
+            fragments.Add(new(message, null));
+            return fragments;
+        }
+
+        /// <summary>
+        /// Logs a message to the logger.
+        /// </summary>
+        /// <param name="level">The severity of the log..</param>
+        /// <param name="message">The message that should be logged.</param>
+        public void Log(LogLevel level, string message)
+        {
+            var outputFragments = BuildFragments(OutputFormatOptions, level, message);
+            var fileFragments = BuildFragments(FileFormatOptions, level, message);
+            var rawFileFragments = fileFragments.Select(f => f.Text);
+            var logFileLine = string.Concat(rawFileFragments);
+
+            if (WriteToFile && File.Exists(LogFilePath))
+                File.AppendAllText(LogFilePath, logFileLine + "\n");
+
+            if (!ColoredOutput || Console.IsOutputRedirected)
+            {
+                var rawOutputFragments = outputFragments.Select(f => f.Text);
+                var logOutputLine = string.Concat(rawOutputFragments);
+
+                Console.WriteLine(logOutputLine);
+                return;
+            }
+
+            var startFg = Console.ForegroundColor;
+
+            try
+            {
+                foreach (var fragment in outputFragments)
+                {
+                    if (fragment.Color is { } color)
+                        Console.ForegroundColor = color;
+                    else
+                        Console.ForegroundColor = startFg;
+
+                    Console.Write(fragment.Text);
+                }
+
+                Console.WriteLine();
+            }
+            finally
+            {
+                Console.ForegroundColor = startFg;
+            }
+
+            Console.WriteLine();
+        }
     }
 }
