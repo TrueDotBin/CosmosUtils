@@ -75,7 +75,9 @@ namespace TrueDotBin.CosmosUtils.TestKernel
         private static void LoggerTest()
         {
             Logger.Global.Log(LogLevel.Info, "Global logger");
+
             var testLogger = new Logger("LoggerInstance");
+            testLogger.OutputFormatOptions.ShowSource = true;
 
             testLogger.Log(LogLevel.Info, "Instanced logger");
         }
