@@ -7,7 +7,7 @@ namespace TrueDotBin.CosmosUtils.Logging
     /// <summary>
     /// How a log entry should look like.
     /// </summary>
-    public class LoggerFormatOptions
+    public sealed class LoggerFormatOptions
     {
         /// <summary>
         /// Whether to show the log's level.
