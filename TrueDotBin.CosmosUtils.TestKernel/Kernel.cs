@@ -53,7 +53,7 @@ namespace TrueDotBin.CosmosUtils.TestKernel
         {
             if (!EmbeddedResourceLoader.TryLoadResource(NineSliceTestPath, typeof(Kernel).Assembly, out var nineSliceTestImageBytes))
             {
-                Logger.Global.Error($"Could not load \"{NineSliceTestPath}\"");
+                // Logger.Global.Error($"Could not load \"{NineSliceTestPath}\"");
                 return;
             }
 
@@ -74,14 +74,16 @@ namespace TrueDotBin.CosmosUtils.TestKernel
 
         private static void LoggerTest()
         {
-            Logger.Global.Info("Global logger");
+            Logger.Global.Log(LogLevel.Info, "Global logger");
 
-            var testLogger = new Logger("LoggerInstance")
-            {
-                LogFormat = "{SOURCE} | {LEVEL} {MESSAGE}"
-            };
+            var testLogger = new Logger("LoggerInstance");
+            testLogger.OutputFormatOptions.ShowSource = true;
 
-            testLogger.Info("Instanced logger with custom log format");
+            testLogger.Log(LogLevel.Info, "Instanced logger");
+
+            testLogger.MinimumLevel = LogLevel.Warning;
+            testLogger.Log(LogLevel.Info, "Filtered log");
+            testLogger.Log(LogLevel.Warning, "Unfiltered log");
         }
 
         protected override void BeforeRun()
@@ -90,7 +92,7 @@ namespace TrueDotBin.CosmosUtils.TestKernel
 
             LoggerTest();
 
-            Logger.Global.Info("Preparing for nine-slice test");
+            Logger.Global.Log(LogLevel.Info, "Preparing for nine-slice test");
             TimerManager.Wait(2000);
 
             var canvas = Canvas.GetFullScreen();

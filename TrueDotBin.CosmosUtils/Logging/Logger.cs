@@ -10,15 +10,22 @@ namespace TrueDotBin.CosmosUtils.Logging
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The default log format is "[{LEVEL}] {MESSAGE}"; this can be changed with <see cref="LogFormat"/>
+    /// Output is colored by default, set <see cref="ColoredOutput"/> to false to disable output coloring.
     /// </para>
     /// 
     /// <para>
-    /// Output is colored by default, set <see cref="ColoredOutput"/> to false to disable output coloring.
+    /// Logs are not written to a file, set <see cref="WriteToFile"/> to true and set a <see cref="LogFilePath"/> to enable file logging.
+    /// </para>
+    /// 
+    /// <para>
+    /// The minimum log level is <see cref="LogLevel.Info"/>, this can be changed by
+    /// setting <see cref="MinimumLevel"/> (output) or <see cref="MinimumFileLevel"/> (file logging)
     /// </para>
     /// </remarks>
     public sealed class Logger(string? source = null)
     {
+        private readonly object _fileLock = new();
+
         /// <summary>
         /// The process-wide logger instance. Use this instead of creating a
         /// <see cref="Logger"/> unless you need independent configuration.
@@ -36,11 +43,14 @@ namespace TrueDotBin.CosmosUtils.Logging
         /// <remarks>
         /// Each log level has its own color:
         /// <list type="bullet">
-        ///     <item>Information - cyan</item>
-        ///     <item>Error - red</item>
-        ///     <item>Warning - yellow</item>
-        ///     <item>Fatal - dark red</item>
+        ///     <item><see cref="LogLevel.Fatal"/> - red</item>
+        ///     <item><see cref="LogLevel.Error"/> - red</item>
+        ///     <item><see cref="LogLevel.Warning"/> - yellow</item>
+        ///     <item><see cref="LogLevel.Info"/> - cyan</item>
+        ///     <item><see cref="LogLevel.Debug"/> - white</item>
         /// </list>
+        /// 
+        /// These can be changed using <see cref="LogLevelColors"/>
         /// </remarks>
         public bool ColoredOutput { get; set; } = true;
 
@@ -61,117 +71,151 @@ namespace TrueDotBin.CosmosUtils.Logging
         public string DateFormat { get; set; } = "dd/MM/yyyy";
 
         /// <summary>
-        /// The format of each log entry.
+        /// The color of each log level.
         /// </summary>
-        /// <remarks>
-        /// <para>
-        /// The following tokens are replaced in each entry:
-        /// <list type="bullet">
-        ///     <item><c>{SOURCE}</c> - where this log entry came from, e.g., "Shell"</item>
-        ///     <item><c>{LEVEL}</c> - the log level</item>
-        ///     <item><c>{MESSAGE}</c> - the message you want to log</item>
-        ///     <item><c>{DATE}</c> - the current date, formatted with <see cref="DateFormat"/></item>
-        ///     <item><c>{TIME}</c> - the current time, formatted with <see cref="TimeFormat"/></item>
-        /// </list></para>
-        /// 
-        /// <para>
-        /// The log level is three characters; there is no way to change that.
-        /// </para>
-        /// </remarks>
-        public string LogFormat { get; set; } = "[{LEVEL}] {MESSAGE}";
-
-        private string CreateLogMessage(string level, string message)
+        public Dictionary<LogLevel, ConsoleColor> LogLevelColors { get; set; } = new()
         {
-            var now = DateTime.Now;
-            var time = now.ToString(TimeFormat);
-            var date = now.ToString(DateFormat);
+            { LogLevel.Fatal, ConsoleColor.Red },
+            { LogLevel.Error, ConsoleColor.Red },
+            { LogLevel.Warning, ConsoleColor.Yellow },
+            { LogLevel.Info, ConsoleColor.Cyan },
+            { LogLevel.Debug, ConsoleColor.White },
+        };
 
-            return LogFormat
-                .Replace("{SOURCE}", Source)
-                .Replace("{LEVEL}", level)
-                .Replace("{MESSAGE}", message)
-                .Replace("{DATE}", date)
-                .Replace("{TIME}", time);
+        /// <summary>
+        /// The string representation of each log level.
+        /// </summary>
+        public Dictionary<LogLevel, string> LogLevelStrings { get; set; } = new()
+        {
+            { LogLevel.Fatal, "FTL" },
+            { LogLevel.Error, "ERR" },
+            { LogLevel.Warning, "WRN" },
+            { LogLevel.Info, "INF" },
+            { LogLevel.Debug, "DEB" },
+        };
+
+        /// <summary>
+        /// The minimum log level that will be shown on the console.
+        /// </summary>
+        public LogLevel MinimumLevel { get; set; } = LogLevel.Info;
+
+        /// <summary>
+        /// The minimum log level that will be written to <see cref="LogFilePath"/> if <see cref="WriteToFile"/> is true.
+        /// </summary>
+        public LogLevel MinimumFileLevel { get; set; } = LogLevel.Info;
+
+        /// <summary>
+        /// Whether to also write logs to a file.
+        /// </summary>
+        public bool WriteToFile { get; set; }
+
+        /// <summary>
+        /// The path of the log file.
+        /// </summary>
+        public string? LogFilePath { get; set; }
+
+        /// <summary>
+        /// The format options for logging to standard output.
+        /// </summary>
+        public LoggerFormatOptions OutputFormatOptions { get; } = new();
+
+        /// <summary>
+        /// The format options for logging to a file.
+        /// </summary>
+        public LoggerFormatOptions FileFormatOptions { get; } = new()
+        {
+            ShowDate = true,
+            ShowTime = true
+        };
+
+        private List<LogFragment> BuildFragments(LoggerFormatOptions options, LogLevel level, string message)
+        {
+            var fragments = new List<LogFragment>();
+            var dt = DateTime.Now;
+            var formattedDate = dt.ToString(DateFormat);
+            var formattedTime = dt.ToString(TimeFormat);
+
+            if (options.ShowDate)
+            {
+                var frag = new LogFragment($"{formattedDate} ", null);
+                fragments.Add(frag);
+            }
+
+            if (options.ShowTime)
+            {
+                var frag = new LogFragment($"{formattedTime} ", null);
+                fragments.Add(frag);
+            }
+
+            if (options.ShowLevel)
+            {
+                var color = LogLevelColors[level];
+                var logLevelString = LogLevelStrings[level];
+
+                var frag = new LogFragment($"[ {logLevelString} ] ", color);
+                fragments.Add(frag);
+            }
+
+            if (options.ShowSource && !string.IsNullOrEmpty(source))
+            {
+                var frag = new LogFragment($"({source}) ", null);
+                fragments.Add(frag);
+            }
+
+            fragments.Add(new(message, null));
+            return fragments;
         }
 
         /// <summary>
-        /// Logs a message that indicates a success.
+        /// Logs a message to the logger.
         /// </summary>
-        /// <param name="message">The message to log.</param>
-        public void Success(string message)
+        /// <param name="level">The severity of the log..</param>
+        /// <param name="message">The message that should be logged.</param>
+        public void Log(LogLevel level, string message)
         {
-            if (ColoredOutput)
-                Console.ForegroundColor = ConsoleColor.Green;
+            var outputFragments = BuildFragments(OutputFormatOptions, level, message);
+            var fileFragments = BuildFragments(FileFormatOptions, level, message);
+            var rawFileFragments = fileFragments.Select(f => f.Text);
+            var logFileLine = string.Concat(rawFileFragments);
 
-            var msg = CreateLogMessage("SUC", message);
-            Console.WriteLine(msg);
+            if (WriteToFile && level >= MinimumFileLevel && !string.IsNullOrEmpty(LogFilePath))
+            {
+                lock (_fileLock)
+                    File.AppendAllText(LogFilePath, logFileLine + "\n");
+            }
 
-            if (ColoredOutput)
-                Console.ResetColor();
-        }
+            if (level >= MinimumLevel)
+            {
+                if (!ColoredOutput || Console.IsOutputRedirected)
+                {
+                    var rawOutputFragments = outputFragments.Select(f => f.Text);
+                    var logOutputLine = string.Concat(rawOutputFragments);
 
-        /// <summary>
-        /// Logs an informational message.
-        /// </summary>
-        /// <param name="message">The message to log.</param>
-        public void Info(string message)
-        {
-            if (ColoredOutput)
-                Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine(logOutputLine);
+                    return;
+                }
 
-            var msg = CreateLogMessage("INF", message);
-            Console.WriteLine(msg);
+                var startFg = Console.ForegroundColor;
 
-            if (ColoredOutput)
-                Console.ResetColor();
-        }
+                try
+                {
+                    foreach (var fragment in outputFragments)
+                    {
+                        if (fragment.Color is { } color)
+                            Console.ForegroundColor = color;
+                        else
+                            Console.ForegroundColor = startFg;
 
-        /// <summary>
-        /// Logs a message that indicates an error with an operation.
-        /// </summary>
-        /// <param name="message">The message to log.</param>
-        public void Error(string message)
-        {
-            if (ColoredOutput)
-                Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write(fragment.Text);
+                    }
 
-            var msg = CreateLogMessage("ERR", message);
-            Console.WriteLine(msg);
-
-            if (ColoredOutput)
-                Console.ResetColor();
-        }
-
-        /// <summary>
-        /// Logs a message that indicates a fatal failure.
-        /// </summary>
-        /// <param name="message">The message to log.</param>
-        public void Fatal(string message)
-        {
-            if (ColoredOutput)
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-
-            var msg = CreateLogMessage("FTL", message);
-            Console.WriteLine(msg);
-
-            if (ColoredOutput)
-                Console.ResetColor();
-        }
-
-        /// <summary>
-        /// Logs a message that indicates a warning.
-        /// </summary>
-        /// <param name="message">The message to log.</param>
-        public void Warn(string message)
-        {
-            if (ColoredOutput)
-                Console.ForegroundColor = ConsoleColor.Yellow;
-
-            var msg = CreateLogMessage("WRN", message);
-            Console.WriteLine(msg);
-
-            if (ColoredOutput)
-                Console.ResetColor();
+                    Console.WriteLine();
+                }
+                finally
+                {
+                    Console.ForegroundColor = startFg;
+                }
+            }
         }
     }
 }
