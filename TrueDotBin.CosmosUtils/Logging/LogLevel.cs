@@ -10,19 +10,9 @@ namespace TrueDotBin.CosmosUtils.Logging
     public enum LogLevel
     {
         /// <summary>
-        /// Indicates a failure that causes the system to stop.
+        /// Diagnostic information, useful during development and troubleshooting.
         /// </summary>
-        Fatal,
-
-        /// <summary>
-        /// Indicates a failure that causes the current operation to stop.
-        /// </summary>
-        Error,
-
-        /// <summary>
-        /// Indicates a problem that may potentially cause errors.
-        /// </summary>
-        Warning,
+        Debug,
 
         /// <summary>
         /// Messages that inform the user about something
@@ -30,8 +20,18 @@ namespace TrueDotBin.CosmosUtils.Logging
         Info,
 
         /// <summary>
-        /// Diagnostic information, useful during development and troubleshooting.
+        /// Indicates a problem that may potentially cause errors.
         /// </summary>
-        Debug
+        Warning,
+
+        /// <summary>
+        /// Indicates a failure that causes the current operation to stop.
+        /// </summary>
+        Error,
+
+        /// <summary>
+        /// Indicates a failure that causes the system to stop.
+        /// </summary>
+        Fatal,
     }
 }

@@ -80,6 +80,10 @@ namespace TrueDotBin.CosmosUtils.TestKernel
             testLogger.OutputFormatOptions.ShowSource = true;
 
             testLogger.Log(LogLevel.Info, "Instanced logger");
+
+            testLogger.MinimumLevel = LogLevel.Warning;
+            testLogger.Log(LogLevel.Info, "Filtered log");
+            testLogger.Log(LogLevel.Warning, "Unfiltered log");
         }
 
         protected override void BeforeRun()

@@ -24,6 +24,8 @@ namespace TrueDotBin.CosmosUtils.Logging
     /// </remarks>
     public sealed class Logger(string? source = null)
     {
+        private readonly object _fileLock = new();
+
         /// <summary>
         /// The process-wide logger instance. Use this instead of creating a
         /// <see cref="Logger"/> unless you need independent configuration.
@@ -176,45 +178,43 @@ namespace TrueDotBin.CosmosUtils.Logging
             var rawFileFragments = fileFragments.Select(f => f.Text);
             var logFileLine = string.Concat(rawFileFragments);
 
-            if (WriteToFile && File.Exists(LogFilePath))
+            if (WriteToFile && level >= MinimumFileLevel && !string.IsNullOrEmpty(LogFilePath))
             {
-                if (level < MinimumFileLevel)
-                    return;
-
-                File.AppendAllText(LogFilePath, logFileLine + "\n");
+                lock (_fileLock)
+                    File.AppendAllText(LogFilePath, logFileLine + "\n");
             }
 
-            if (level < MinimumLevel)
-                return;
-
-            if (!ColoredOutput || Console.IsOutputRedirected)
+            if (level >= MinimumLevel)
             {
-                var rawOutputFragments = outputFragments.Select(f => f.Text);
-                var logOutputLine = string.Concat(rawOutputFragments);
-
-                Console.WriteLine(logOutputLine);
-                return;
-            }
-
-            var startFg = Console.ForegroundColor;
-
-            try
-            {
-                foreach (var fragment in outputFragments)
+                if (!ColoredOutput || Console.IsOutputRedirected)
                 {
-                    if (fragment.Color is { } color)
-                        Console.ForegroundColor = color;
-                    else
-                        Console.ForegroundColor = startFg;
+                    var rawOutputFragments = outputFragments.Select(f => f.Text);
+                    var logOutputLine = string.Concat(rawOutputFragments);
 
-                    Console.Write(fragment.Text);
+                    Console.WriteLine(logOutputLine);
+                    return;
                 }
 
-                Console.WriteLine();
-            }
-            finally
-            {
-                Console.ForegroundColor = startFg;
+                var startFg = Console.ForegroundColor;
+
+                try
+                {
+                    foreach (var fragment in outputFragments)
+                    {
+                        if (fragment.Color is { } color)
+                            Console.ForegroundColor = color;
+                        else
+                            Console.ForegroundColor = startFg;
+
+                        Console.Write(fragment.Text);
+                    }
+
+                    Console.WriteLine();
+                }
+                finally
+                {
+                    Console.ForegroundColor = startFg;
+                }
             }
         }
     }
