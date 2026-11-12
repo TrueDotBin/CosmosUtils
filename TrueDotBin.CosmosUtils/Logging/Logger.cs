@@ -115,11 +115,11 @@ namespace TrueDotBin.CosmosUtils.Logging
         /// <summary>
         /// The format options for logging to standard output.
         /// </summary>
-        public LoggerFormatOptions OutputFormatOptions { get; set; } = new();
+        public LoggerFormatOptions OutputFormatOptions { get; } = new();
 
         /// <summary>
         /// The format options for logging to a file.
         /// </summary>
-        public LoggerFormatOptions FileFormatOptions { get; set; } = new();
+        public LoggerFormatOptions FileFormatOptions { get; } = new();
     }
 }
