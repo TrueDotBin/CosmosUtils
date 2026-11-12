@@ -208,8 +208,6 @@ namespace TrueDotBin.CosmosUtils.Logging
             {
                 Console.ForegroundColor = startFg;
             }
-
-            Console.WriteLine();
         }
     }
 }
