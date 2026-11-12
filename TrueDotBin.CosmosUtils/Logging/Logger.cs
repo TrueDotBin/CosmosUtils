@@ -169,7 +169,7 @@ namespace TrueDotBin.CosmosUtils.Logging
         /// <summary>
         /// Logs a message to the logger.
         /// </summary>
-        /// <param name="level">The severity of the log..</param>
+        /// <param name="level">The severity of the log.</param>
         /// <param name="message">The message that should be logged.</param>
         public void Log(LogLevel level, string message)
         {
