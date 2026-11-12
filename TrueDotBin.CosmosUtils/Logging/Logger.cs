@@ -120,6 +120,10 @@ namespace TrueDotBin.CosmosUtils.Logging
         /// <summary>
         /// The format options for logging to a file.
         /// </summary>
-        public LoggerFormatOptions FileFormatOptions { get; } = new();
+        public LoggerFormatOptions FileFormatOptions { get; } = new()
+        {
+            ShowDate = true,
+            ShowTime = true
+        };
     }
 }
