@@ -74,16 +74,10 @@ namespace TrueDotBin.CosmosUtils.TestKernel
 
         private static void LoggerTest()
         {
-            /*
-            Logger.Global.Info("Global logger");
+            Logger.Global.Log(LogLevel.Info, "Global logger");
+            var testLogger = new Logger("LoggerInstance");
 
-            var testLogger = new Logger("LoggerInstance")
-            {
-                LogFormat = "{SOURCE} | {LEVEL} {MESSAGE}"
-            };
-
-            testLogger.Info("Instanced logger with custom log format");
-            */
+            testLogger.Log(LogLevel.Info, "Instanced logger");
         }
 
         protected override void BeforeRun()
@@ -92,7 +86,7 @@ namespace TrueDotBin.CosmosUtils.TestKernel
 
             LoggerTest();
 
-            // Logger.Global.Info("Preparing for nine-slice test");
+            Logger.Global.Log(LogLevel.Info, "Preparing for nine-slice test");
             TimerManager.Wait(2000);
 
             var canvas = Canvas.GetFullScreen();
