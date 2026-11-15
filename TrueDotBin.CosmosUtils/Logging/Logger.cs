@@ -117,16 +117,12 @@ namespace TrueDotBin.CosmosUtils.Logging
         /// <summary>
         /// The format options for logging to standard output.
         /// </summary>
-        public LoggerFormatOptions OutputFormatOptions { get; } = new();
+        public LoggerFormatOptions OutputFormatOptions { get; } = Defaults.DefaultOutputFormat;
 
         /// <summary>
         /// The format options for logging to a file.
         /// </summary>
-        public LoggerFormatOptions FileFormatOptions { get; } = new()
-        {
-            ShowDate = true,
-            ShowTime = true
-        };
+        public LoggerFormatOptions FileFormatOptions { get; } = Defaults.DefaultFileFormat;
 
         private List<LogFragment> BuildFragments(LoggerFormatOptions options, LogLevel level, string message)
         {

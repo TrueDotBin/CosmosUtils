@@ -11,5 +11,15 @@ namespace TrueDotBin.CosmosUtils
         /// The default value of a <see cref="Logger"/>'s source.
         /// </summary>
         public static string DefaultLoggerSource { get; set; } = "Logger";
+
+        /// <summary>
+        /// The default value of a <see cref="Logger"/>'s output format.
+        /// </summary>
+        public static LoggerFormatOptions DefaultOutputFormat { get; set; } = new();
+
+        /// <summary>
+        /// The default value of a <see cref="Logger"/>'s file format.
+        /// </summary>
+        public static LoggerFormatOptions DefaultFileFormat { get; set; } = new();
     }
 }
