@@ -26,7 +26,7 @@ namespace TrueDotBin.CosmosUtils.FileSystem
             {
                 partition = null;
                 return false;
-            }                
+            }
 
             if (device.BlockCount <= FileSystemMath.GptTail)
             {
@@ -91,18 +91,22 @@ namespace TrueDotBin.CosmosUtils.FileSystem
         public static bool CreateAt(IBlockDevice device, ulong startSector, ulong sectorCount,
                                      MbrSystemId mbrSystemId, Guid gptPartitionType, out Partition? partition)
         {
-            var part = new Partition(device, startSector, sectorCount, "Partition");
-
-            if (!PartitionManager.Create(device, part.StartSector, sectorCount, (byte)mbrSystemId, gptPartitionType))
-            {
-                partition = null;
+            partition = null;
+            if (!PartitionManager.Create(device, startSector, sectorCount, (byte)mbrSystemId, gptPartitionType))
                 return false;
-            }
 
-            partition = part;
             StorageManager.RescanPartitions(device);
 
-            return true;
+            var parts = StorageManager.GetPartitions(device);
+            for (int i = 0; i < parts.Count; i++)
+            {
+                if (parts[i].StartSector == startSector && parts[i].BlockCount == sectorCount)
+                {
+                    partition = parts[i];
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
